@@ -7,7 +7,11 @@ class Model {
             serialize: Model.parse(schema, unserialize)
         }
     }
-
+    /**
+     * parse normal data format to AWS format
+     * @param {JSON} schema 
+     * @param {JSON} data 
+     */
     static parse (schema, data) {
         let _result = {}
         for (let key1 in data) {
@@ -19,7 +23,11 @@ class Model {
         }
         return _result
     }
-
+    /**
+     * merge to base Model
+     * @param {String} name 
+     * @param {JSON} schema 
+     */
     static build (name, schema) {
         return class SubModel extends Model {
             constructor (data) {
@@ -32,7 +40,9 @@ class Model {
             }
         }
     }
-
+    /**
+     * put data to dynamodb
+     */
     save () {
         console.log(this.$__.serialize)
     }
