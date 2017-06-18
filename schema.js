@@ -1,28 +1,37 @@
+const constant = require('./constant.js')
 const Model = require('./model.js')
 
 class Schema {
     /**
      * create model as a new object
-     * @param {String} name 
+     * @param {String} table 
      * @param {JSON} schema 
      */
-    static model (name, schema) {
-        let _schema = Object.assign({}, {
-            id: Number,
-            timestamp: Number
-        }, schema)
+    static model (table, schema) {
+        let _schema = Object.assign({}, constant.SCHEMA.MODEL, schema)
+        let parsed = Schema.map(_schema)
+        return Model.build(table, parsed)
+    }
+    static map (_schema) {
         let parsed = {}
-
         for (let key in _schema) {
             let type = null
-            if (_schema[key] === String)
-                type = 'S'
-            else if (_schema[key] === Number) 
-                type = 'N'
-            if (type)
-                parsed[key] = type
+            let _type = _schema[key] // String, Number ...
+            if (_type === String) type = 'S'
+            else if (_type === Number) type = 'N'
+            else if (_type === Boolean) type = 'BOOL'
+            else if (_type === Array) type = 'L'
+            else if (typeof _type === 'object') type = 'M'
+            if (type) {
+                if (type === 'M') {
+                    parsed[key] = {}
+                    parsed[key][type] = Schema.map(_type)
+                } else {
+                    parsed[key] = type
+                }
+            }
         }
-        return Model.build(name, parsed)
+        return parsed
     }
 }
 
