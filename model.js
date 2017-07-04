@@ -1,8 +1,8 @@
 class Model {
     constructor (table, schema, unserialize) {
         this.$__ = {
-            schema: schema,
-            unserialize: unserialize,
+            schema,
+            unserialize,
             serialize: Model.parse(schema, unserialize)
         }
     }
